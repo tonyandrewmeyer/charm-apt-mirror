@@ -6,6 +6,12 @@
 
 [tool.setuptools_scm]
 
+[tool.pytest.ini_options]
+# Treat warnings (deprecations, resource leaks, ...) as errors so they fail the
+# unit tests rather than silently accumulating. The unit tests use ops.testing's
+# Context/State (Scenario), so no Harness-deprecation ignore is required.
+filterwarnings = ["error"]
+
 [tool.flake8]
 max-line-length = 99
 max-doc-length = 99
