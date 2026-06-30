@@ -10,7 +10,15 @@
 # Treat warnings (deprecations, resource leaks, ...) as errors so they fail the
 # unit tests rather than silently accumulating. The unit tests use ops.testing's
 # Context/State (Scenario), so no Harness-deprecation ignore is required.
-filterwarnings = ["error"]
+filterwarnings = [
+    "error",
+    # Scenario's legacy metadata loader on the ops 2.x line (which is what
+    # pip resolves on Python 3.8, since ops 3.x dropped 3.8 support) leaks
+    # the actions.yaml handle via `yaml.safe_load(path.open())`. The fix
+    # landed in ops 3.8; once a 2.23.x release ships with the backport, or
+    # the 3.8 job is dropped in favour of ops 3.x, this ignore can go.
+    "ignore:unclosed file:ResourceWarning:scenario.state",
+]
 
 [tool.flake8]
 max-line-length = 99
