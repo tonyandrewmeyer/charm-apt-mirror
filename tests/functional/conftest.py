@@ -22,6 +22,19 @@ class Helper:
         return action.results
 
 
+def pytest_collection_modifyitems(items):
+    """Exempt the functional suite from the repo-wide -Werror setting.
+
+    pyproject.toml's [tool.pytest.ini_options] filterwarnings promotes warnings
+    to errors, which is what we want for the unit tests. That setting is
+    repo-wide, though, and this suite also runs under pytest (tox -e func), so
+    without this the functional tests would fail on deprecations raised deep in
+    juju/libjuju/zaza rather than on anything this charm controls.
+    """
+    for item in items:
+        item.add_marker(pytest.mark.filterwarnings("default"))
+
+
 def pytest_addoption(parser):
     parser.addoption(
         "--series",
